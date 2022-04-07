@@ -1,0 +1,4 @@
+---
+# vars file for web_server
+
+nginx_listen_port: 8080

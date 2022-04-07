@@ -1,0 +1,11 @@
+- name: Nginx
+  hosts: webservers
+  become: true
+  roles:
+    - web_nginx
+
+- name: Nginx
+  hosts: balance
+  become: true
+  roles:
+    - sec_role
