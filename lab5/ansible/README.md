@@ -24,8 +24,8 @@ $ vagrant up
 $ ansible-playbook base.yml
 ```
 
-<b style="font-size: 70px">Все машины запущены: 
-</b>
+<br /> Все машины запущены: 
+<br />
 <img src="images/5.2.png"/>
 
 <b style="font-size: 30px">Проверим: 
