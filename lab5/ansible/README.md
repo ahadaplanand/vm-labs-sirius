@@ -24,16 +24,18 @@ $ vagrant up
 $ ansible-playbook base.yml
 ```
 
-<br /> Все машины запущены: 
+<br /> <b> Все машины запущены: </b>
+
 <br />
 <img src="images/5.2.png"/>
 
 <b style="font-size: 30px">Проверим: 
 </b>
 <img src="images/5.3.png"/>
+<br />
 
 
-
+<br />
 <b style="font-size: 30px">Затем мы можем вывести из строя как webserver так и haproxy, а можем их вместе: </b>
 <img src="images/5.4.png"/> 
 
