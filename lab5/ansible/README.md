@@ -1,5 +1,5 @@
 <h1> Лабораторная №5 </h1>
-Задание:
+<b> Задание: <b>
 <ul>
 <li>На серверах web1, web2 установить Nginx.</li>
 <li>На серверах haproxy1, haproxy2 установить и настроить  отказоустойчивую связку HAProxy+Keepalived. Настроить VIP с помощью Keepalived в соответствии со схемой</li>
@@ -11,8 +11,10 @@
 
 Схема:
 <img src="images/5.1.png"/>
-
-
+<br />
+<br />
+<br />
+<br />
 В шаблонном обзазе Centos отключены selinux и firewall
 Клонируем репозиторий и переходим в директорию lab5/ansible
 
@@ -23,27 +25,24 @@ $ vagrant up
 # И выполняем всю необходимую конфигурацию
 $ ansible-playbook base.yml
 ```
-
 <br /> <b> Все машины запущены: </b>
-
 <br />
 <img src="images/5.2.png"/>
-
-<b style="font-size: 30px">Проверим: 
-</b>
+<br /> <b>Проверим: </b>
+<br />
 <img src="images/5.3.png"/>
 <br />
-
-
 <br />
-<b style="font-size: 30px">Затем мы можем вывести из строя как webserver так и haproxy, а можем их вместе: </b>
+<br />
+<br />
+<br /> <b>Затем мы можем вывести из строя как webserver так и haproxy, а можем их вместе: </b> 
+<br />
 <img src="images/5.4.png"/> 
-
-<b style="font-size: 30px">И все будет прекрасно работать: 
-</b>
+<br /> <b>И все будет прекрасно работать: </b>
+<br />
 <img src="images/5.5.png"/>
-
-
-
-
-<b style="font-size: 35px">Опыт приходит с опытом </b>
+<br />
+<br />
+<br />
+<br />
+<b> Опыт приходит с опытом </b>
