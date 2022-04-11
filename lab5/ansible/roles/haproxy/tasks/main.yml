@@ -1,0 +1,31 @@
+---
+# tasks file for sec_role
+
+- name: Install haproxy & keepalived
+  yum:
+    name:
+      - epel-release
+      - haproxy
+      - keepalived
+    state: latest
+    
+- name: Change ip_nonlocal_bind
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: "{{keepalived_ip_nonlocal_bind}}"
+    reload: true
+    state: present
+    
+- name: Haproxy config
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  notify: 
+    - restart haproxy
+
+- name: Keepalived config
+  template:
+    src: keepalived.conf
+    dest: /etc/keepalived/keepalived.conf
+  notify: 
+    - restart keepalived

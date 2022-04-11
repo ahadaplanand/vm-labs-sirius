@@ -1,0 +1,11 @@
+- name: webservers role
+  hosts: webservers
+  roles:
+    - webservers
+  tags: webservers
+
+- name: haproxy role
+  hosts: haproxy
+  roles:
+    - haproxy
+  tags: haproxy
