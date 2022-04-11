@@ -10,7 +10,7 @@
 </ul>
 
 Схема:
-<img src="./ images/5.1.png"/>
+<img src="images/5.1.png"/>
 
 
 В шаблонном обзазе Centos отключены selinux и firewall
@@ -24,7 +24,7 @@ $ vagrant up
 $ ansible-playbook base.yml
 ```
 
-Все машины запущены:
+<b  style="font-size: 20px">Все машины запущены: </b>
 <img src="images/5.2.png"/>
 
 Проверим:
