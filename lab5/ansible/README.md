@@ -1,5 +1,5 @@
 <h1> Лабораторная №5 </h1>
-<b> Задание: <b>
+<b> Задание: </b>
 <ul>
 <li>На серверах web1, web2 установить Nginx.</li>
 <li>На серверах haproxy1, haproxy2 установить и настроить  отказоустойчивую связку HAProxy+Keepalived. Настроить VIP с помощью Keepalived в соответствии со схемой</li>
@@ -9,7 +9,8 @@
 <li>Все файлы по этому заданию выложить в Github и написать ReadMe со скринами работоспособности и инструкцию по запуску вашего Ansible-сценария.</li>
 </ul>
 
-Схема:
+<br /> <b> Схема: </b>
+<br />
 <img src="images/5.1.png"/>
 <br />
 <br />
@@ -28,6 +29,8 @@ $ ansible-playbook base.yml
 <br /> <b> Все машины запущены: </b>
 <br />
 <img src="images/5.2.png"/>
+<br />
+<br />
 <br /> <b>Проверим: </b>
 <br />
 <img src="images/5.3.png"/>
@@ -38,6 +41,8 @@ $ ansible-playbook base.yml
 <br /> <b>Затем мы можем вывести из строя как webserver так и haproxy, а можем их вместе: </b> 
 <br />
 <img src="images/5.4.png"/> 
+<br />
+<br />
 <br /> <b>И все будет прекрасно работать: </b>
 <br />
 <img src="images/5.5.png"/>
