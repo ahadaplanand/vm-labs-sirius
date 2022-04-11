@@ -1,0 +1,8 @@
+---
+# vars file for major
+
+pgpath: "/var/lib/pgsql/14/data"
+db_name: "onemore"
+db_user: "repluser"
+db_password: "123"
+source_pgs: "192.168.22.0/24"

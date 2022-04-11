@@ -1,0 +1,5 @@
+[major]
+pg1 ansible_host=192.168.22.222
+
+[reserve]
+pg2 ansible_host=192.168.22.223

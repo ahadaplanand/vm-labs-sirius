@@ -1,0 +1,11 @@
+- name: installing postgersql, configuring replication and archiving
+  hosts: major
+  become: true
+  roles:
+    - major
+
+- name: installing postgersql and making backup
+  hosts: reserve
+  become: true
+  roles:
+    - reserve

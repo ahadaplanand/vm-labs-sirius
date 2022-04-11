@@ -1,0 +1,24 @@
+---
+# tasks file for reserve
+
+- name: download postgresql rpm packet
+  yum:
+    name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    state: present
+
+- name: install postgresql
+  yum:
+    name: postgresql14-server
+    state: present
+
+- name: check backup
+  stat:
+    path: "{{pgpath}}/postgresql.conf"
+  register: stat_result
+
+- name: make backup
+  become: yes
+  become_user: postgres
+  shell: "pg_basebackup -h 192.168.22.222 -D {{pgpath}} -R -P -U {{db_user}} -X stream"
+  when: not stat_result.stat.exists
+  notify: restart postgresql-14

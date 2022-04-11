@@ -1,0 +1,5 @@
+---
+# vars file for reserve
+
+pgpath: "/var/lib/pgsql/14/data"
+db_user: "repluser"

@@ -1,0 +1,1 @@
+README в каждой лабе в папке ansibles
