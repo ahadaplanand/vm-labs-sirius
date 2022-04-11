@@ -24,21 +24,24 @@ $ vagrant up
 $ ansible-playbook base.yml
 ```
 
-<b  style="font-size: 20px">Все машины запущены: </b>
+<b style="font-size: 30px">Все машины запущены: 
+</b>
 <img src="images/5.2.png"/>
 
-Проверим:
+<b style="font-size: 30px">Проверим: 
+</b>
 <img src="images/5.3.png"/>
 
 
-Затем мы можем вывести из строя как webserver так и haproxy, а может их вместе:
+
+<b style="font-size: 30px">Затем мы можем вывести из строя как webserver так и haproxy, а можем их вместе: </b>
 <img src="images/5.4.png"/> 
 
-И все будет прекрасно работать:
+<b style="font-size: 30px">И все будет прекрасно работать: 
+</b>
 <img src="images/5.5.png"/>
 
 
 
 
-
-Опыт приходит с опытом
+<b style="font-size: 35px">Опыт приходит с опытом </b>
