@@ -25,17 +25,17 @@ $ ansible-playbook base.yml
 ```
 
 Все машины запущены:
-<img src="./ images/5.2.png"/>
+<img src="images/5.2.png"/>
 
 Проверим:
-<img src="./ images/5.3.png"/>
+<img src="images/5.3.png"/>
 
 
 Затем мы можем вывести из строя как webserver так и haproxy, а может их вместе:
-<img src="./ images/5.4.png"/> 
+<img src="images/5.4.png"/> 
 
 И все будет прекрасно работать:
-<img src="./ images/5.5.png"/>
+<img src="images/5.5.png"/>
 
 
 
