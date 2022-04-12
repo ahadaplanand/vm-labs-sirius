@@ -22,6 +22,6 @@ backend static
     option redispatch
     timeout connect 2s
     timeout server  3s
-{% for item in groups['web'] %}
+{% for item in groups['webservers'] %}
     server {{ hostvars[item]['inventory_hostname'] }} {{ hostvars[item]['ansible_host'] }}:8080 check inter 1000 
 {% endfor %}
