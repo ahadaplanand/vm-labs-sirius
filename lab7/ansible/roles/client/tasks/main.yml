@@ -1,0 +1,180 @@
+---
+- name: install postgres rpm
+  yum:
+    name:  
+      - https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+      - epel-release
+    state: present
+
+- name: instal postgresql-14
+  yum:
+    name:  
+      - postgresql14-server
+    state: present
+
+- name: install lvm2 dependency
+  package:
+    name: lvm2
+    state: present
+
+
+
+- name: create pgdata volume group
+  community.general.lvg:
+    vg: pgdata
+    pvs: /dev/sdb
+    
+- name: create pgwal volume group
+  community.general.lvg:
+    vg: pgwal
+    pvs: /dev/sdc
+
+- name: create pgdata logical volume
+  community.general.lvol:
+    vg: pgdata
+    lv: pgdata
+    pvs: /dev/sdb
+    size: 100%VG
+
+- name: create pgwal logical volume
+  community.general.lvol:
+    vg: pgwal
+    lv: pgwal
+    pvs: /dev/sdc
+    size: 100%VG
+    
+
+
+- name: mkfs pgdata
+  community.general.filesystem:
+    fstype: xfs
+    dev: /dev/mapper/pgdata-pgdata
+
+- name: mkfs pgwal
+  community.general.filesystem:
+    fstype: xfs
+    dev: /dev/mapper/pgwal-pgwal
+
+- name: mount the pddata
+  mount:
+    path: "{{pathtofiles}}"
+    src: /dev/mapper/pgdata-pgdata
+    fstype: xfs
+    state: mounted
+
+- name: mount the pgwal
+  mount:
+    path: "{{pathtoback}}"
+    src: /dev/mapper/pgwal-pgwal
+    fstype: xfs
+    state: mounted
+    
+    
+
+- name: create pg_data directory
+  file:
+    path: "{{pathtofiles}}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0700'
+    
+- name: create pg_wal directory
+  file:
+    path: "{{pathtoback}}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '0700'
+
+- name: change owner, group and permissions
+  ansible.builtin.file:
+    path: "{{pathtoobsh}}"
+    owner: postgres
+    group: postgres
+    mode: '0755'
+
+- name: chown /pgsql
+  shell: chown -R postgres.postgres /pgsql
+  
+
+
+- name: install vip and patroni from files
+  shell: "yum -y localinstall /vagrant/*rpm"
+
+- name: copy rpms
+  copy:
+    src: "{{item}}"
+    dest: /tmp/
+  with_items:
+    - patroni-2.0.2-1.rhel7.x86_64.rpm
+    - vip-manager-1.0.2-1.x86_64.rpm
+
+- name: install rpms
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - /tmp/patroni-2.0.2-1.rhel7.x86_64.rpm
+    - /tmp/vip-manager-1.0.2-1.x86_64.rpm
+
+
+
+- name: create patroni directory
+  file:
+    path: /var/log/patroni
+    state: directory
+    owner: postgres
+    group: postgres
+
+- name: create postgres directory
+  file:
+    path: /var/log/postgres
+    state: directory
+    owner: postgres
+    group: postgres
+
+- name: change environment
+  template:
+    src: env
+    dest: /etc/environment
+
+
+
+- name: start patroni-watchdog
+  ansible.builtin.systemd:
+    name: patroni-watchdog.service
+    state: started
+    enabled: yes
+
+- name: asleep for 10s
+  shell: sleep 10
+
+- name: start patroni
+  ansible.builtin.systemd:
+    name: patroni
+    state: started
+    enabled: yes
+    
+    
+
+- name: change patroni postgresql.yml
+  template:
+    src: postgresql.yml
+    dest: /opt/app/patroni/etc/postgresql.yml
+
+- name: read gossip encryption key from previously boostrapped server
+  shell: 'cat /etc/consul.d/consul.hcl | grep "^encrypt = " | sed -E ''s/encrypt = "(.+)",?/\1/'' | sed ''s/^ *//;s/ *$//'''
+  register: consul_key_read
+  changed_when: false
+
+- name: set fact gossip encryption key from existing configuration
+  set_fact:
+    consul_raw_key: "{{consul_key_read.stdout}}"
+  when: consul_key_read.stdout != ''
+  
+- name: change vip-manager config
+  template:
+    src: vip.yml
+    dest: /etc/default/vip-manager.yml
+  notify: restart vip
