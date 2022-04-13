@@ -5,17 +5,23 @@
       - https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
       - epel-release
     state: present
+  tags:
+    - install-postgres
 
 - name: instal postgresql-14
   yum:
     name:  
       - postgresql14-server
     state: present
+  tags:
+    - install-postgres
 
 - name: install lvm2 dependency
   package:
     name: lvm2
     state: present
+  tags:
+    - install-lvm2
 
 
 
@@ -23,11 +29,15 @@
   community.general.lvg:
     vg: pgdata
     pvs: /dev/sdb
+  tags:
+    - create-lvm
     
 - name: create pgwal volume group
   community.general.lvg:
     vg: pgwal
     pvs: /dev/sdc
+  tags:
+    - create-lvm
 
 - name: create pgdata logical volume
   community.general.lvol:
@@ -35,6 +45,8 @@
     lv: pgdata
     pvs: /dev/sdb
     size: 100%VG
+  tags:
+    - create-lvm
 
 - name: create pgwal logical volume
   community.general.lvol:
@@ -42,6 +54,8 @@
     lv: pgwal
     pvs: /dev/sdc
     size: 100%VG
+  tags:
+    - create-lvm
     
 
 
@@ -49,11 +63,15 @@
   community.general.filesystem:
     fstype: xfs
     dev: /dev/mapper/pgdata-pgdata
+  tags:
+    - format
 
 - name: mkfs pgwal
   community.general.filesystem:
     fstype: xfs
     dev: /dev/mapper/pgwal-pgwal
+  tags:
+    - format
 
 - name: mount the pddata
   mount:
@@ -61,6 +79,8 @@
     src: /dev/mapper/pgdata-pgdata
     fstype: xfs
     state: mounted
+  tags:
+    - mount
 
 - name: mount the pgwal
   mount:
@@ -68,6 +88,8 @@
     src: /dev/mapper/pgwal-pgwal
     fstype: xfs
     state: mounted
+  tags:
+    - mount
     
     
 
@@ -78,6 +100,8 @@
     owner: postgres
     group: postgres
     mode: '0700'
+  tags:
+    - create-dirs
     
 - name: create pg_wal directory
   file:
@@ -86,6 +110,8 @@
     owner: postgres
     group: postgres
     mode: '0700'
+  tags:
+    - create-dirs
 
 - name: change owner, group and permissions
   ansible.builtin.file:
@@ -93,14 +119,20 @@
     owner: postgres
     group: postgres
     mode: '0755'
+  tags:
+    - owner
 
 - name: chown /pgsql
   shell: chown -R postgres.postgres /pgsql
+  tags:
+    - owner
   
 
 
 - name: install vip and patroni from files
   shell: "yum -y localinstall /vagrant/*rpm"
+  tags:
+    - install-vip-patroni
 
 - name: copy rpms
   copy:
@@ -109,6 +141,8 @@
   with_items:
     - patroni-2.0.2-1.rhel7.x86_64.rpm
     - vip-manager-1.0.2-1.x86_64.rpm
+  tags:
+    - install-vip-patroni
 
 - name: install rpms
   yum:
@@ -117,6 +151,8 @@
   with_items:
     - /tmp/patroni-2.0.2-1.rhel7.x86_64.rpm
     - /tmp/vip-manager-1.0.2-1.x86_64.rpm
+  tags:
+    - install-vip-patroni
 
 
 
@@ -126,6 +162,8 @@
     state: directory
     owner: postgres
     group: postgres
+  tags:
+    - create-dirs-2
 
 - name: create postgres directory
   file:
@@ -133,11 +171,15 @@
     state: directory
     owner: postgres
     group: postgres
+  tags:
+    - create-dirs-2
 
 - name: change environment
   template:
     src: env
     dest: /etc/environment
+  tags:
+    - environment
 
 
 
@@ -146,15 +188,21 @@
     name: patroni-watchdog.service
     state: started
     enabled: yes
+  tags:
+    - start-patroni
 
 - name: asleep for 10s
   shell: sleep 10
+  tags:
+    - start-patroni
 
 - name: start patroni
   ansible.builtin.systemd:
     name: patroni
     state: started
     enabled: yes
+  tags:
+    - start-patroni
     
     
 
@@ -162,19 +210,27 @@
   template:
     src: postgresql.yml
     dest: /opt/app/patroni/etc/postgresql.yml
+  tags:
+    - postgresql-yml
 
 - name: read gossip encryption key from previously boostrapped server
   shell: 'cat /etc/consul.d/consul.hcl | grep "^encrypt = " | sed -E ''s/encrypt = "(.+)",?/\1/'' | sed ''s/^ *//;s/ *$//'''
   register: consul_key_read
   changed_when: false
+  tags:
+    - consul-hcl
 
 - name: set fact gossip encryption key from existing configuration
   set_fact:
     consul_raw_key: "{{consul_key_read.stdout}}"
   when: consul_key_read.stdout != ''
+  tags:
+    - consul-hcl
   
 - name: change vip-manager config
   template:
     src: vip.yml
     dest: /etc/default/vip-manager.yml
   notify: restart vip
+  tags:
+    - vip-yml

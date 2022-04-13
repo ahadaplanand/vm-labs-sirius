@@ -6,10 +6,12 @@
       vars:
         dc_name: "sirius"
         consul_ansible_group: "consul"
+  tags: consul
 
 - name: clients
   hosts: pudg
   become: true
   roles:
     - client
+  tags: client
     
