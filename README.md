@@ -1,1 +1,1 @@
-README в каждой лабе в папке ansibles
+README для каждой лабараторной в папке ansible
