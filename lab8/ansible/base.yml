@@ -1,0 +1,23 @@
+- name: consuls
+  hosts: consul
+  become: yes
+  roles:
+    - role: consul
+      vars:
+        dc_name: "sirius"
+        consul_ansible_group: "consul"
+  tags: consul
+
+- name: clients
+  hosts: pudg
+  become: true
+  roles:
+    - client
+  tags: client
+    
+- name: nfs
+  hosts: nfss
+  become: true
+  roles:
+    - nfs
+  tags: nfs
